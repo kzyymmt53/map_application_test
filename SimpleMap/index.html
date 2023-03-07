@@ -55,11 +55,26 @@
 
       map.addLayer(backgroundLayer);
       L.circle([35.3627808, 138.7307908], {
-        color: 'yellow',
-        fillColor: '#ff0000',
+        color: "yellow",
+        fillColor: "#ff0000",
         fillOpacity: 0.3,
         radius: 1000,
-      }).bindPopup('I am Circle!').addTo(map);
+      })
+        .bindPopup("I am Circle!")
+        .addTo(map);
+      L.polyline(
+        [
+          [35.36, 138.73],
+          [35.37, 138.73],
+          [35.37, 138.74],
+          [35.38, 138.74],
+          [35.39, 138.75],
+          [35.37, 138.75],
+        ],
+        { color: "blue" }
+      )
+        .bindPopup("I am Polyline!")
+        .addTo(map);
     </script>
   </body>
 </html>
