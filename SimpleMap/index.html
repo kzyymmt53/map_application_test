@@ -23,7 +23,9 @@
 
           
             map.addLayer(backgroundLayer);
-            L.marker([33, 129.5]).bindPopup('平面直角座標1系原点').addTo(map);
+            fetch('./P29-21_10.geojson').then((res) => res.json()).then((json) => {
+                L.geoJson(json).bindPopup((layer) => layer.features.properties.P29_004).addTo(map);
+            });
             
         </script>
     </body>
