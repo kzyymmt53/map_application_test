@@ -1,32 +1,65 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>サンプルタイトル</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js" integrity="sha512-Dqm3h1Y4qiHUjbhxTuBGQsza0Tfppn53SHlu/uj1f+RT+xfShfe7r6czRf5r2NmllO2aKx+tYJgoxboOkn1Scg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css" integrity="sha512-mD70nAW2ThLsWH0zif8JPbfraZ8hbCtjQ+5RU1m4+ztZq6/MymyZeB55pWsi4YAX+73yvcaJyk61mzfYMvtm9w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    </head>
-    <body>
-        <div id="map" style="height: 80vh"></div>
-        <script>
-            const map = L.map('map', {
-                center: [36.5, 137.1],
-                zoom: 5,
-            });
+  <head>
+    <title>サンプルタイトル</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"
+      integrity="sha512-Dqm3h1Y4qiHUjbhxTuBGQsza0Tfppn53SHlu/uj1f+RT+xfShfe7r6czRf5r2NmllO2aKx+tYJgoxboOkn1Scg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.css"
+      integrity="sha512-mD70nAW2ThLsWH0zif8JPbfraZ8hbCtjQ+5RU1m4+ztZq6/MymyZeB55pWsi4YAX+73yvcaJyk61mzfYMvtm9w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"
+      integrity="sha512-OFs3W4DIZ5ZkrDhBFtsCP6JXtMEDGmhl0QPlmWYBJay40TT1n3gt2Xuw8Pf/iezgW9CdabjkNChRqozl/YADmg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"
+      integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"
+      integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div id="map" style="height: 80vh"></div>
+    <script>
+      const map = L.map("map", {
+        center: [36.5, 137.1],
+        zoom: 5,
+      });
 
-            const backgroundLayer = L.tileLayer(
-                'https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
-                {
-                    maxZoom: 19,
-                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                },
-            );
+      const backgroundLayer = L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }
+      );
 
-          
-            map.addLayer(backgroundLayer);
-            fetch('./P29-21_10.geojson').then((res) => res.json()).then((json) => {
-                L.geoJson(json).bindPopup((layer) => layer.features.properties.P29_004).addTo(map);
-            });
-            
-        </script>
-    </body>
+      map.addLayer(backgroundLayer);
+      fetch("./P29-21_10.geojson")
+        .then((res) => res.json())
+        .then((json) => {
+          const markers = L.markerClusterGroup().bindPopup((layer) => layer.features.properties.P29_004,).addTo(map);
+          L.geoJSON(json).addTo(markers);
+        });
+    </script>
+  </body>
 </html>
