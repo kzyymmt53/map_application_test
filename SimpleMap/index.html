@@ -44,46 +44,35 @@
         zoom: 14,
       });
 
-      const backgroundLayer = L.tileLayer(
+      const backgroundLayer = {
+        OpenStreetMap: L.tileLayer(
+        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contoributers',
+        },
+      ),
+        地理院地図: L.tileLayer(
+        "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+        {
+          maxZoom: 18,
+          attribution:
+            '<a href="http://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
+        }
+      ),
+      空中写真: L.tileLayer(
         "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",
         {
           maxZoom: 17,
           attribution:
             '<a href="http://maps.gsi.go.jp/development/ichiran.html">地理院タイル</a>',
         }
-      );
+      ),
+    };
 
-      map.addLayer(backgroundLayer);
-      L.circle([35.3627808, 138.7307908], {
-        color: "yellow",
-        fillColor: "#ff0000",
-        fillOpacity: 0.3,
-        radius: 1000,
-      })
-        .bindPopup("I am Circle!")
-        .addTo(map);
-      L.polyline(
-        [
-          [35.36, 138.73],
-          [35.37, 138.73],
-          [35.37, 138.74],
-          [35.38, 138.74],
-          [35.39, 138.75],
-          [35.37, 138.75],
-        ],
-        { color: "blue" }
-      )
-        .bindPopup("I am Polyline!")
-        .addTo(map);
-
-    L.polygon(
-        [
-            [35.36, 138.7307908],
-            [35.35, 138.74],
-            [35.34, 138.72],
-        ],
-        {color: 'green'},
-    ).bindPopup("I am Polygon").addTo(map);
+     map.addLayer(backgroundLayer['OpenStreetMap']);
+     const layersControl = L.control.layers(backgroundLayer, [], {collapsed: false}).addTo(map);
     </script>
   </body>
 </html>
