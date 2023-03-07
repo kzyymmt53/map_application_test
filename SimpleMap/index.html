@@ -75,6 +75,15 @@
       )
         .bindPopup("I am Polyline!")
         .addTo(map);
+
+    L.polygon(
+        [
+            [35.36, 138.7307908],
+            [35.35, 138.74],
+            [35.34, 138.72],
+        ],
+        {color: 'green'},
+    ).bindPopup("I am Polygon").addTo(map);
     </script>
   </body>
 </html>
