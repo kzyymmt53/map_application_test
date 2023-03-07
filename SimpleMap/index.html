@@ -21,11 +21,10 @@
                 },
             );
 
-            const marker = L.marker([33, 129.5]);
-            marker.bindPopup('平面直角座標1系原点');
-
+          
             map.addLayer(backgroundLayer);
-            map.addLayer(marker);
+            L.marker([33, 129.5]).bindPopup('平面直角座標1系原点').addTo(map);
+            
         </script>
     </body>
 </html>
