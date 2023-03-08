@@ -150,7 +150,30 @@ const map = new maplibregl.Map({
         layout: { visibility: "none" },
       },
       {
-        id: "skhb-layer",
+        id: "skhb-1-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": [
+            // ズームレベルに応じた円の大きさ
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            5,
+            2,
+            14,
+            6,
+          ],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster1", 1], // 属性:disaster1がtrueの地物のみ表示する
+        layout: { visibility: "none" }, // レイヤーの表示はOpacityControlで操作するためデフォルトで非表示にしておく
+      },
+      {
+        id: "skhb-2-layer",
         source: "skhb",
         "source-layer": "skhb",
         type: "circle",
@@ -160,6 +183,92 @@ const map = new maplibregl.Map({
           "circle-stroke-width": 1,
           "circle-stroke-color": "#ffffff",
         },
+        filter: ["==", "disaster2", 1],
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-3-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster3", 1],
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-4-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster4", 1],
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-5-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster5", 1],
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-6-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster6", 1],
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-7-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster7", 1],
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-8-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+        filter: ["==", "disaster8", 1],
+        layout: { visibility: "none" },
       },
     ],
   },
@@ -177,4 +286,18 @@ map.on("load", () => {
     },
   });
   map.addControl(opacity, "top-left");
+
+  const opacitySkhb = new OpacityControl({
+    baseLayers: {
+      "skhb-1-layer": "洪水",
+      "skhb-2-layer": "崖崩れ/土石流/地滑り",
+      "skhb-3-layer": "高潮",
+      "skhb-4-layer": "地震",
+      "skhb-5-layer": "津波",
+      "skhb-6-layer": "大規模な火事",
+      "skhb-7-layer": "内水氾濫",
+      "skhb-8-layer": "火山現象",
+    },
+  });
+  map.addControl(opacitySkhb, "top-right");
 });
