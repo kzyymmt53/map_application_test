@@ -1,7 +1,7 @@
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import OpacityControl from 'maplibre-gl-opacity';
-import 'maplibre-gl-opacity/dist/maplibre-gl-opacity.css';
+import OpacityControl from "maplibre-gl-opacity";
+import "maplibre-gl-opacity/dist/maplibre-gl-opacity.css";
 
 const map = new maplibregl.Map({
   container: "map",
@@ -88,6 +88,17 @@ const map = new maplibregl.Map({
         attribution:
           '<a href="https://disaportal.gsi.go.jp/hazardmap/copyright/opendata.html">ハザードマップポータルサイト</a>',
       },
+      skhb: {
+        // 指定緊急避難場所ベクトルタイル
+        type: "vector",
+        tiles: [
+          `${location.href.replace("/index.html", "")}/skhb/{z}/{x}/{y}.pbf`,
+        ],
+        minzoom: 5,
+        maxzoom: 8,
+        attribution:
+          '<a href="https://www.gsi.go.jp/bousaichiri/hinanbasho.html" target="_blank">国土地理院:指定緊急避難場所データ</a>',
+      },
     },
 
     layers: [
@@ -97,55 +108,73 @@ const map = new maplibregl.Map({
         type: "raster",
       },
       {
-        id: 'hazard_hightide-layer',
-        source: 'hazard_hightide',
-        type: 'raster',
-        paint: { 'raster-opacity': 0.7 },
-        layout: {visibility: 'none'},
+        id: "hazard_flood-layer",
+        source: "hazard_flood",
+        type: "raster",
+        paint: { "raster-opacity": 0.7 },
+        layout: { visibility: "none" },
       },
       {
-        id: 'hazard_tsunami-layer',
-        source: 'hazard_tsunami',
-        type: 'raster',
-        paint: { 'raster-opacity': 0.7 },
-        layout: {visibility: 'none'},
+        id: "hazard_hightide-layer",
+        source: "hazard_hightide",
+        type: "raster",
+        paint: { "raster-opacity": 0.7 },
+        layout: { visibility: "none" },
       },
       {
-        id: 'hazard_doseki-layer',
-        source: 'hazard_doseki',
-        type: 'raster',
-        paint: { 'raster-opacity': 0.7 },
-        layout: {visibility: 'none'},
+        id: "hazard_tsunami-layer",
+        source: "hazard_tsunami",
+        type: "raster",
+        paint: { "raster-opacity": 0.7 },
+        layout: { visibility: "none" },
       },
       {
-        id: 'hazard_kyukeisha-layer',
-        source: 'hazard_kyukeisha',
-        type: 'raster',
-        paint: { 'raster-opacity': 0.7 },
-        layout: {visibility: 'none'},
+        id: "hazard_doseki-layer",
+        source: "hazard_doseki",
+        type: "raster",
+        paint: { "raster-opacity": 0.7 },
+        layout: { visibility: "none" },
       },
       {
-        id: 'hazard_jisuberi-layer',
-        source: 'hazard_jisuberi',
-        type: 'raster',
-        paint: { 'raster-opacity': 0.7 },
-        layout: {visibility: 'none'},
+        id: "hazard_kyukeisha-layer",
+        source: "hazard_kyukeisha",
+        type: "raster",
+        paint: { "raster-opacity": 0.7 },
+        layout: { visibility: "none" },
       },
-     
+      {
+        id: "hazard_jisuberi-layer",
+        source: "hazard_jisuberi",
+        type: "raster",
+        paint: { "raster-opacity": 0.7 },
+        layout: { visibility: "none" },
+      },
+      {
+        id: "skhb-layer",
+        source: "skhb",
+        "source-layer": "skhb",
+        type: "circle",
+        paint: {
+          "circle-color": "#6666cc",
+          "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 2, 14, 6],
+          "circle-stroke-width": 1,
+          "circle-stroke-color": "#ffffff",
+        },
+      },
     ],
   },
 });
 
-map.on('load', () => {
+map.on("load", () => {
   const opacity = new OpacityControl({
     baseLayers: {
-      'hazard_flood-layer': '洪水浸水想定区域',
-      'hazard_hightide-layer': '高潮浸水想定区域',
-      'hazard_tsunami-layer': '津波浸水想定区域',
-      'hazard_doseki-layer': '土石流警戒区域',
-      'hazard_kyukeisha-layer': '急傾斜警戒区域',
-      'hazard_jisuberi-layer': '地滑り警戒区域',
+      "hazard_flood-layer": "洪水浸水想定区域",
+      "hazard_hightide-layer": "高潮浸水想定区域",
+      "hazard_tsunami-layer": "津波浸水想定区域",
+      "hazard_doseki-layer": "土石流警戒区域",
+      "hazard_kyukeisha-layer": "急傾斜警戒区域",
+      "hazard_jisuberi-layer": "地滑り警戒区域",
     },
   });
-  map.addControl(opacity, 'top-left');
+  map.addControl(opacity, "top-left");
 });
