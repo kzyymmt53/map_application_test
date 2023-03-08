@@ -301,3 +301,7 @@ map.on("load", () => {
   });
   map.addControl(opacitySkhb, "top-right");
 });
+
+map.on('click', () => {
+  alert("click");
+})
