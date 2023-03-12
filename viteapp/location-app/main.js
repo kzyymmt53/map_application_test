@@ -275,6 +275,27 @@ const map = new maplibregl.Map({
 });
 
 map.on("load", () => {
+  map.on("click", (e) => {
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: [
+        "skhb-1-layer",
+        "skhb-2-layer",
+        "skhb-3-layer",
+        "skhb-4-layer",
+        "skhb-5-layer",
+        "skhb-6-layer",
+        "skhb-7-layer",
+        "skhb-8-layer",
+      ],
+    });
+    if (features.length === 0) return;
+    const feature = features[0];
+    const popup = new maplibregl.Popup()
+      .setLngLat(feature.geometry.coordinates)
+      .setHTML(
+        `<div style="font-weight: 900;">${feature.properties.name}</div>`
+      ).addTo(map);
+  });
   const opacity = new OpacityControl({
     baseLayers: {
       "hazard_flood-layer": "洪水浸水想定区域",
@@ -301,7 +322,3 @@ map.on("load", () => {
   });
   map.addControl(opacitySkhb, "top-right");
 });
-
-map.on('click', () => {
-  alert("click");
-})
