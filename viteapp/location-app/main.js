@@ -315,7 +315,12 @@ map.on("load", () => {
     } else {
       map.getCanvas().style.cursor = "";
     }
-  })
+  });
+  const geolocationControl = new maplibregl.GeolocateControl({
+    trackUserLocation: true
+  });
+  map.addControl(geolocationControl, "bottom-right");
+
   const opacity = new OpacityControl({
     baseLayers: {
       "hazard_flood-layer": "洪水浸水想定区域",
