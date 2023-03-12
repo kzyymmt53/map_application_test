@@ -2,6 +2,7 @@ import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import OpacityControl from "maplibre-gl-opacity";
 import "maplibre-gl-opacity/dist/maplibre-gl-opacity.css";
+import distance from '@turf/distance';
 
 const map = new maplibregl.Map({
   container: "map",
@@ -98,6 +99,13 @@ const map = new maplibregl.Map({
         maxzoom: 8,
         attribution:
           '<a href="https://www.gsi.go.jp/bousaichiri/hinanbasho.html" target="_blank">国土地理院:指定緊急避難場所データ</a>',
+      },
+      route: {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: [],
+        },
       },
     },
 
@@ -270,6 +278,15 @@ const map = new maplibregl.Map({
         filter: ["==", "disaster8", 1],
         layout: { visibility: "none" },
       },
+      {
+        id: 'route-layer',
+        source: 'route',
+        type: 'line',
+        paint: {
+          'line-color': '#33aaff',
+          'line-width': 4,
+        },
+      }
     ],
   },
 });
@@ -294,10 +311,11 @@ map.on("load", () => {
       .setLngLat(feature.geometry.coordinates)
       .setHTML(
         `<div style="font-weight: 900;">${feature.properties.name}</div>`
-      ).addTo(map);
+      )
+      .addTo(map);
   });
 
-  map.on('mousemove', (e) => {
+  map.on("mousemove", (e) => {
     const features = map.queryRenderedFeatures(e.point, {
       layers: [
         "skhb-1-layer",
@@ -311,15 +329,89 @@ map.on("load", () => {
       ],
     });
     if (features.length > 0) {
-      map.getCanvas().style.cursor = 'pointer';
+      map.getCanvas().style.cursor = "pointer";
     } else {
       map.getCanvas().style.cursor = "";
     }
   });
+
+  
+  let userlocation = null;
+
   const geolocationControl = new maplibregl.GeolocateControl({
-    trackUserLocation: true
+    trackUserLocation: true,
   });
   map.addControl(geolocationControl, "bottom-right");
+  geolocationControl.on("geolocate", (e) => {
+    userlocation = [e.coords.longitude, e.coords.latitude];
+  });
+
+  const getCurrentSkhbLayerFilter = () => {
+    const style = map.getStyle();
+    const skhbLayers = style.layers.filter((layer) =>
+      layer.id.startsWith("skhb")
+    );
+    const visibleSkhbLayers = skhbLayers.filter(
+      (layer) => layer.layout.visibility === "visible"
+    );
+    return visibleSkhbLayers[0].filter;
+  };
+
+  const getNearestFeature = (longitude, latitude) => {
+    const currentSkhbLayerFilter = getCurrentSkhbLayerFilter();
+    const features = map.querySourceFeatures("skhb", {
+      sourceLayer: "skhb",
+      filter: currentSkhbLayerFilter,
+    });
+
+   
+    const nearestFeature = features.reduce((minDistFeature, feature) => {
+      
+      const dist = distance(
+        [longitude, latitude],
+        feature.geometry.coordinates
+      );
+      
+      if (minDistFeature === null || minDistFeature.properties.dist > dist) {
+        return {
+          ...feature,
+          properties: {
+            ...feature.properties,
+            dist,
+          },
+        };
+      }
+      return minDistFeature;
+    }, null);
+    return nearestFeature;
+  };
+
+  map.on('render', () => {
+    if (geolocationControl._watchState === "OFF") userlocation == null;
+    if (map.getZoom() < 7 || userlocation === null) {
+      map.getSource('route').setData({
+        type: 'FeatureCollection',
+        features: [],
+      });
+      return;
+    };
+    const nearestFeature = getNearestFeature(userlocation[0], userlocation[1]);
+    
+    const routeFeature = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: [
+          userlocation,
+          nearestFeature._geometry.coordinates,
+        ],
+      },
+    };
+    map.getSource('route').setData({
+      type: 'FeatureCollection',
+      features: [routeFeature],
+    });
+  });
 
   const opacity = new OpacityControl({
     baseLayers: {
